@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  # ── MongoDB 7 ──────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7-jammy
+    container_name: sg-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret123
+      MONGO_INITDB_DATABASE:      subscription-ghost
+    volumes:
+      - mongo-data:/data/db
+      - mongo-cfg:/data/configdb
+    healthcheck:
+      test:         ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok", "--quiet"]
+      interval:     10s
+      timeout:      5s
+      retries:      5
+      start_period: 30s
+    networks: [sg-net]
+
+  # ── Redis 7 ────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sg-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+        --appendonly yes
+        --maxmemory 256mb
+        --maxmemory-policy allkeys-lru
+        --requirepass ""
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test:     ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout:  3s
+      retries:  5
+    networks: [sg-net]
+
+  # ── Mongo-Express (dev DB UI) ──────────────────────────────────
+  mongo-express:
+    image: mongo-express:latest
+    container_name: sg-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret123
+      ME_CONFIG_MONGODB_URL:           mongodb://admin:secret123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME:    admin
+      ME_CONFIG_BASICAUTH_PASSWORD:    admin123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks: [sg-net]
+
+volumes:
+  mongo-data:
+  mongo-cfg:
+  redis-data:
+
+networks:
+  sg-net:
+    name: subscription-ghost-network
