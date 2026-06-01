@@ -1,377 +1,350 @@
-# 👻 SubscriptionGhost
+<div align="center">
 
-> **Never get blindsided by a subscription renewal again.**
-> Smart pre-alerts · spend analytics · AI cost optimisation · production-ready full-stack TypeScript.
+<img src="https://img.shields.io/badge/DocuMind_AI-v2.0.0-6366f1?style=for-the-badge&logo=openai&logoColor=white" alt="DocuMind AI v2.0.0" />
 
-![Version](https://img.shields.io/badge/version-1.0.0-00ff87?style=flat-square&labelColor=020510)
-![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen?style=flat-square)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+# DocuMind AI
 
----
+**Intelligent document analysis powered by GPT-4o**
 
-## Table of Contents
+Upload any PDF or image — get a structured AI summary, sentiment score, key insights, and actionable recommendations in seconds.
 
-1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Tech Stack](#tech-stack)
-4. [Prerequisites](#prerequisites)
-5. [Quick Start](#quick-start)
-6. [Environment Variables](#environment-variables)
-7. [API Reference](#api-reference)
-8. [Project Structure](#project-structure)
-9. [Database Schema](#database-schema)
-10. [Frontend Design System](#frontend-design-system)
-11. [Testing](#testing)
-12. [Deployment](#deployment)
-13. [Roadmap](#roadmap)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-5-646cff?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776ab?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+
+[Live Demo](#) · [Report Bug](../../issues) · [Request Feature](../../issues)
+
+</div>
 
 ---
 
-## Overview
+## ✨ Features
 
-SubscriptionGhost solves a universal problem: **subscription creep**. The average person
-pays for 12+ active subscriptions but actively uses fewer than half. SubscriptionGhost:
-
-- Tracks every subscription in one place
-- Fires email/SMS alerts at 7 / 3 / 1 days before renewal
-- Provides spend analytics with category breakdowns and trend charts
-- Uses AI to surface cost optimisation opportunities (duplicate tools, unused tiers, bundle deals)
-
-**Users save an average of $187/year.**
+| Feature | Description |
+|---|---|
+| 📄 **PDF Extraction** | Selectable text via `pdfplumber` with scanned-page guidance |
+| 🖼️ **Image OCR** | Tesseract OCR with automatic Windows path detection and graceful fallback |
+| 🤖 **GPT-4o Analysis** | Structured JSON output — summary, sentiment, key points, recommendations |
+| 🌊 **SSE Streaming** | Real-time analysis delivery over Server-Sent Events |
+| 🔐 **JWT Auth** | Access + refresh token rotation, bcrypt password hashing |
+| 📜 **History** | Full paginated document history for authenticated users |
+| 👤 **Guest Mode** | Upload and analyse without an account |
+| 📱 **Responsive UI** | Mobile-first design, works on all screen sizes |
+| ♿ **Accessible** | WCAG 2.1 AA — skip nav, ARIA landmarks, live regions, focus rings |
 
 ---
 
-## Architecture
+## 🖼️ Screenshots
+
+> Upload → Analyse → Results
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                      REACT CLIENT  :5173                     │
-│   Vite + TypeScript · Recharts · Lucide · Custom 3D CSS      │
-└──────────────────────┬───────────────────────────────────────┘
-                       │  REST  /api/*
-┌──────────────────────▼───────────────────────────────────────┐
-│                    EXPRESS API  :5000                        │
-│   TypeScript · JWT Auth · Zod Validation · Rate Limiting     │
-└──────┬───────────────────────────────────┬───────────────────┘
-       │                                   │
-┌──────▼──────────┐              ┌─────────▼─────────────────┐
-│   MongoDB 7     │              │   Redis 7  +  BullMQ       │
-│   Mongoose ODM  │              │   Daily cron + email queue │
-└─────────────────┘              └───────────────────────────┘
-                                           │
-                                 ┌─────────▼──────┐
-                                 │  Nodemailer     │
-                                 │  SMTP / SES     │
-                                 └────────────────┘
+[ Upload Page ]  →  [ Loading / Streaming ]  →  [ Results Page ]
+  Drop zone            Indigo progress bar        Sentiment card
+  File preview         GPT-4o processing          Key points list
+  Validate & send                                 Recommendations
+                                                  Export report
 ```
 
 ---
 
-## Tech Stack
-
-| Layer       | Tech                                         | Why                               |
-|-------------|----------------------------------------------|-----------------------------------|
-| Frontend    | React 18 + TypeScript + Vite                 | Fast DX, tree-shaking, HMR        |
-| UI          | Custom CSS-in-JS design system               | True 3D transforms, no lock-in    |
-| Charts      | Recharts                                     | Composable, declarative           |
-| HTTP client | Axios + interceptors                         | Auto token refresh, typed helpers |
-| Backend     | Node 20 + Express 4 + TypeScript             | Mature, low overhead              |
-| Database    | MongoDB 7 + Mongoose                         | Flexible schema, virtual fields   |
-| Queue       | Redis 7 + BullMQ                             | Reliable job scheduling           |
-| Auth        | JWT (access 15m + refresh 7d) + bcrypt 12r   | Stateless, secure rotation        |
-| Validation  | Zod                                          | Runtime safety, inferred types    |
-| Email       | Nodemailer                                   | Works with any SMTP / SES         |
-| Container   | Docker Compose                               | One-command local infra           |
-| Testing     | Jest + Supertest + MongoMemoryServer         | Fast, no external DB needed       |
-
----
-
-## Prerequisites
-
-| Tool         | Version  | Link                                           |
-|--------------|----------|------------------------------------------------|
-| Node.js      | ≥ 20 LTS | https://nodejs.org/                            |
-| npm          | ≥ 10     | bundled with Node                              |
-| Docker       | ≥ 25     | https://www.docker.com/products/docker-desktop |
-| Git          | any      | https://git-scm.com/                           |
-
----
-
-## Quick Start
-
-```bash
-# 1. Clone
-git clone https://github.com/YOUR_USERNAME/subscription-ghost.git
-cd subscription-ghost
-
-# 2. Install dependencies
-cd backend  && npm install && cd ..
-cd frontend && npm install && cd ..
-
-# 3. Configure env
-cp backend/.env.example  backend/.env
-cp frontend/.env.example frontend/.env
-# Edit backend/.env with your values
-
-# 4. Start Docker services (MongoDB + Redis)
-docker compose up -d
-# Verify: docker ps  →  sg-mongodb (healthy), sg-redis (healthy)
-
-# 5a. Start backend (Terminal 1)
-cd backend && npm run dev
-# ✅  API  →  http://localhost:5000/api
-# ❤️   Health →  http://localhost:5000/api/health
-
-# 5b. Start frontend (Terminal 2)
-cd frontend && npm run dev
-# VITE ready →  http://localhost:5173
-```
-
-Open **http://localhost:5173** — the app loads with demo data.
-
-### Stop everything
-
-```bash
-# Ctrl+C in both terminal windows, then:
-docker compose down          # stop containers
-docker compose down -v       # stop + wipe volumes (resets DB)
-```
-
----
-
-## Environment Variables
-
-### `backend/.env`
-
-```env
-PORT=5000
-NODE_ENV=development
-
-MONGODB_URI=mongodb://admin:secret123@localhost:27017/subscription-ghost?authSource=admin
-
-JWT_ACCESS_SECRET=<64-char random string>
-JWT_REFRESH_SECRET=<different 64-char random string>
-JWT_ACCESS_EXPIRES=15m
-JWT_REFRESH_EXPIRES=7d
-
-REDIS_URL=redis://localhost:6379
-
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your@gmail.com
-SMTP_PASS=your-app-password
-EMAIL_FROM="SubscriptionGhost <noreply@subscriptionghost.app>"
-
-CLIENT_URL=http://localhost:5173
-```
-
-### `frontend/.env`
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-> ⚠️ **Never commit `.env` files.** They are in `.gitignore`.
-
----
-
-## API Reference
-
-All routes are prefixed `/api`. Protected routes require `Authorization: Bearer <accessToken>`.
-
-### Auth
-
-| Method | Route              | Body                          | Response                        |
-|--------|--------------------|-------------------------------|---------------------------------|
-| POST   | `/auth/register`   | `{name, email, password}`     | `{user, accessToken, refreshToken}` |
-| POST   | `/auth/login`      | `{email, password}`           | `{user, accessToken, refreshToken}` |
-| POST   | `/auth/refresh`    | `{refreshToken}`              | `{accessToken, refreshToken}`   |
-| POST   | `/auth/logout`     | `{refreshToken}`              | `{message}`                     |
-
-### Subscriptions (protected)
-
-| Method | Route                   | Notes                            |
-|--------|-------------------------|----------------------------------|
-| GET    | `/subscriptions`        | `?status=&category=&sort=`       |
-| POST   | `/subscriptions`        | Create                           |
-| GET    | `/subscriptions/stats`  | Aggregated monthly/annual totals |
-| GET    | `/subscriptions/:id`    | Single                           |
-| PUT    | `/subscriptions/:id`    | Partial update                   |
-| DELETE | `/subscriptions/:id`    | Hard delete + cascade alerts     |
-
-### Alerts (protected)
-
-| Method | Route                    | Notes               |
-|--------|--------------------------|---------------------|
-| GET    | `/alerts`                | Latest 60, populated|
-| POST   | `/alerts/mark-all-read`  | Bulk mark read      |
-| PUT    | `/alerts/:id/read`       | Single mark read    |
-| DELETE | `/alerts/:id`            | Dismiss             |
-
----
-
-## Project Structure
+## 🏗️ Project Structure
 
 ```
-subscription-ghost/
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   │   ├── db.ts               # Mongoose connect + reconnect handlers
-│   │   │   └── redis.ts            # IORedis + BullMQ queue
+documind/
+├── backend/                   # FastAPI + SQLAlchemy + OpenAI
+│   ├── app/
+│   │   ├── main.py            # App factory, CORS, routers, lifespan
+│   │   ├── config.py          # Pydantic Settings (reads .env)
+│   │   ├── database.py        # Async SQLAlchemy engine + session
 │   │   ├── models/
-│   │   │   ├── User.ts             # bcrypt pre-save, comparePassword method
-│   │   │   ├── Subscription.ts     # daysUntilRenewal + monthlyEquivalent virtuals
-│   │   │   └── Alert.ts
-│   │   ├── controllers/
-│   │   │   ├── authController.ts   # register · login · refresh · logout
-│   │   │   ├── subscriptionController.ts
-│   │   │   └── alertController.ts
-│   │   ├── routes/
-│   │   │   ├── auth.ts
-│   │   │   ├── subscriptions.ts
-│   │   │   └── alerts.ts
-│   │   ├── middleware/
-│   │   │   ├── auth.ts             # JWT protect
-│   │   │   ├── rateLimiter.ts      # auth (10/15m) + api (120/min)
-│   │   │   └── validate.ts         # Zod schemas + middleware
-│   │   ├── jobs/
-│   │   │   └── alertScheduler.ts   # node-cron daily + BullMQ worker
-│   │   ├── services/
-│   │   │   └── emailService.ts     # Nodemailer, branded HTML template
-│   │   ├── tests/
-│   │   │   └── auth.test.ts
-│   │   └── server.ts               # Express app bootstrap
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── jest.config.js
+│   │   │   ├── user.py        # User ORM model
+│   │   │   └── document.py    # Document ORM model
+│   │   ├── schemas/
+│   │   │   ├── user.py        # Register / Login schemas + validators
+│   │   │   └── document.py    # Upload response schema
+│   │   ├── routers/
+│   │   │   ├── auth.py        # POST /register /login /refresh GET /me
+│   │   │   ├── upload.py      # POST /upload/ (multipart)
+│   │   │   ├── analyze.py     # POST /analyze/stream/{id} (SSE)
+│   │   │   └── history.py     # GET /history/ DELETE /history/{id}
+│   │   └── services/
+│   │       ├── security.py    # JWT encode/decode + bcrypt
+│   │       └── extractor.py   # PDF + image text extraction
+│   ├── requirements.txt
 │   └── .env.example
 │
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   │   └── client.ts           # Axios instance + auto-refresh interceptor
-│   │   ├── hooks/
-│   │   │   ├── useAuth.ts          # JWT state, login/register/logout
-│   │   │   └── useSubscriptions.ts # CRUD with optimistic UI
-│   │   ├── types/
-│   │   │   └── index.ts
-│   │   ├── App.tsx                 # Full application (Landing→Auth→Dashboard)
-│   │   └── main.tsx                # React root, splash removal
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── tsconfig.json
-│   └── .env.example
-│
-├── docker-compose.yml
-├── .gitignore
-└── README.md
+└── frontend/                  # React 18 + Vite 5 + Tailwind 3
+    ├── src/
+    │   ├── theme.js           # Central design tokens
+    │   ├── api/client.js      # Axios instance + JWT interceptors
+    │   ├── contexts/
+    │   │   ├── AuthContext.jsx
+    │   │   └── AnalysisContext.jsx
+    │   ├── components/
+    │   │   ├── Navbar.jsx
+    │   │   ├── Footer.jsx
+    │   │   └── FileDropZone.jsx
+    │   └── pages/
+    │       ├── LandingPage.jsx
+    │       ├── AuthPage.jsx
+    │       ├── UploadPage.jsx
+    │       ├── AnalysisPage.jsx
+    │       └── HistoryPage.jsx
+    ├── index.html
+    ├── tailwind.config.js
+    └── package.json
 ```
 
 ---
 
-## Database Schema
+## 🚀 Quick Start
 
-### User
-```typescript
-{ name, email (unique), password (bcrypt), plan: "free"|"pro"|"team",
-  refreshTokens: string[] (hashed), timestamps }
-```
+### Prerequisites
 
-### Subscription
-```typescript
-{ userId, name, category, price, billing, nextRenewal, status,
-  color, initials, notes, alertsSent: number[],
-  // virtuals:
-  daysUntilRenewal, monthlyEquivalent }
-```
+| Tool | Version | Notes |
+|---|---|---|
+| Python | 3.11 or 3.12 | **Not 3.13/3.14** — pydantic-core has no wheels yet |
+| Node.js | 18+ | LTS recommended |
+| PostgreSQL | 14+ | Must be running locally |
+| Tesseract | 5.x | Optional — image OCR. See below. |
 
-### Alert
-```typescript
-{ userId, subId?, type, title, message, emoji, read: boolean, timestamps }
+---
+
+### 1 · Clone the repo
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd documind
 ```
 
 ---
 
-## Frontend Design System
-
-The frontend uses a custom CSS-in-JS design system with no UI library dependency:
-
-| Technique              | Implementation                                           |
-|------------------------|----------------------------------------------------------|
-| **3D tilt cards**      | `useTilt` hook → `rotateX/Y` on `mousemove`              |
-| **Flip cards**         | CSS `transform-style: preserve-3d` + `backface-visibility: hidden` |
-| **Particle field**     | Canvas 2D, 3D z-depth projected to 2D with focal length  |
-| **Specular highlight** | `radial-gradient` following cursor position              |
-| **Glassmorphism**      | `backdrop-filter: blur(20px) saturate(1.5)`              |
-| **Scan line**          | Infinite `translateY` CSS animation on `::after`         |
-| **Neon glow toggles**  | `box-shadow` + gradient background on state change       |
-| **Stagger animations** | `animation-delay` per index on lists/grids               |
-| **Perspective grid**   | `rotateX(65deg)` plane + CSS `mask-image` radial fade    |
-
----
-
-## Testing
+### 2 · Backend setup
 
 ```bash
 cd backend
 
-# All tests
-npm test
+# Create and activate virtual environment
+python -m venv .venv
 
-# Watch mode
-npm run test:watch
+# macOS / Linux
+source .venv/bin/activate
 
-# Coverage report
-npm run test:coverage
+# Windows (PowerShell)
+.venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-Tests use `mongodb-memory-server` — no real database required.
+**Create the database:**
+```bash
+# PostgreSQL must be running
+createdb documind
+
+# Or in psql:
+# CREATE DATABASE documind;
+```
+
+**Configure environment:**
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
+```env
+DATABASE_URL=postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/documind
+OPENAI_API_KEY=sk-proj-your-key-here   # leave blank for mock analysis
+SECRET_KEY=a-random-string-at-least-32-chars-long
+CORS_ORIGINS=http://localhost:5173
+```
+
+**Start the backend:**
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+- API: http://localhost:8000
+- Swagger docs: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
+
+> Tables are created automatically on startup — no migrations needed.
 
 ---
 
-## Deployment
-
-### Backend → Railway / Render / Fly.io
-
-```bash
-cd backend
-npm run build     # tsc → dist/
-node dist/server.js
-```
-
-Set all env vars in your host dashboard. Use MongoDB Atlas for the production URI.
-
-### Frontend → Vercel / Netlify
+### 3 · Frontend setup
 
 ```bash
 cd frontend
-npm run build     # vite build → dist/
+npm install
+npm run dev
 ```
 
-Set `VITE_API_URL` to your production API URL.
+Open http://localhost:5173
 
-### Full Docker (production)
+---
+
+### 4 · Image OCR (optional)
+
+DocuMind works without Tesseract — image uploads return metadata and a mock analysis. For real OCR:
+
+**Windows:**
+1. Download from https://github.com/UB-Mannheim/tesseract/wiki
+2. Install to `C:\Program Files\Tesseract-OCR\`
+3. Restart the backend
+
+**macOS:**
+```bash
+brew install tesseract
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install tesseract-ocr
+```
+
+---
+
+## 🌐 Deployment
+
+### Frontend → Vercel
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d
+# Install Vercel CLI
+npm i -g vercel
+
+cd frontend
+vercel
+```
+
+Or connect your GitHub repo at vercel.com and set **Root Directory** to `frontend`.
+
+**Required environment variable in Vercel:**
+```
+VITE_API_URL = https://your-backend-domain.com/api/v1
 ```
 
 ---
 
-## Roadmap
+### Backend → Railway
 
-- [x] Phase 1 — Core tracking (React + Express + MongoDB + Docker)
-- [x] Phase 1.5 — Production 3D UI system
-- [ ] Phase 2 — Full JWT auth integration (frontend ↔ backend wired)
-- [ ] Phase 3 — Background jobs (BullMQ + Nodemailer live alerts)
-- [ ] Phase 4 — Email inbox scan (IMAP auto-detect subscriptions)
-- [ ] Phase 5 — SMS alerts (Twilio)
-- [ ] Phase 6 — Multi-user team workspaces
-- [ ] Phase 7 — Public API + webhooks + Zapier integration
+1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub**
+2. Set **Root Directory** to `backend`
+3. Add a **PostgreSQL** plugin
+4. Set environment variables:
+
+```
+DATABASE_URL      = (auto-filled by Railway PostgreSQL plugin)
+OPENAI_API_KEY    = sk-proj-...
+SECRET_KEY        = your-secret
+CORS_ORIGINS      = https://your-vercel-app.vercel.app
+```
+
+5. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
 ---
 
-MIT License — © 2025 SubscriptionGhost
+### Backend → Render
+
+1. New Web Service → Connect GitHub repo
+2. Root directory: `backend`
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+5. Add a **PostgreSQL** database and link it
+
+---
+
+## 🔌 API Reference
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/v1/auth/register` | — | Create account |
+| `POST` | `/api/v1/auth/login` | — | OAuth2 form login → tokens |
+| `POST` | `/api/v1/auth/refresh` | — | Rotate refresh token |
+| `GET`  | `/api/v1/auth/me` | Bearer | Current user info |
+| `POST` | `/api/v1/upload/` | Optional | Upload file, extract text |
+| `POST` | `/api/v1/analyze/stream/{id}` | Optional | SSE analysis stream |
+| `GET`  | `/api/v1/history/` | Required | Paginated document history |
+| `DELETE` | `/api/v1/history/{id}` | Required | Delete document |
+| `GET`  | `/health` | — | Health check |
+
+**SSE event protocol:**
+
+```
+event: start
+data:
+
+event: result
+data: {"analysis":"...","sentiment":"positive","key_points":[...],"recommendations":[...]}
+
+event: done
+data:
+```
+
+---
+
+## ⚙️ Environment Variables
+
+| Variable | Default | Required | Description |
+|---|---|---|---|
+| `DATABASE_URL` | — | ✅ | Async PostgreSQL URL (`postgresql+asyncpg://...`) |
+| `OPENAI_API_KEY` | `""` | ⚠️ | GPT-4o-mini key. Mock output if empty. |
+| `SECRET_KEY` | `change-me` | ✅ | JWT signing secret (32+ chars) |
+| `ALGORITHM` | `HS256` | — | JWT algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | — | Access token TTL |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | `7` | — | Refresh token TTL |
+| `MAX_FILE_SIZE` | `5242880` | — | Max upload size in bytes (5 MB) |
+| `CORS_ORIGINS` | `http://localhost:5173` | ✅ | Comma-separated allowed origins |
+
+---
+
+## 🧱 Tech Stack
+
+**Backend**
+- [FastAPI](https://fastapi.tiangolo.com) 0.115 — async Python API framework
+- [SQLAlchemy](https://sqlalchemy.org) 2.0 — async ORM
+- [asyncpg](https://github.com/MagicStack/asyncpg) — PostgreSQL async driver
+- [OpenAI](https://platform.openai.com) 1.57 — GPT-4o-mini analysis
+- [pdfplumber](https://github.com/jsvine/pdfplumber) — PDF text extraction
+- [pytesseract](https://github.com/madmaze/pytesseract) + [Pillow](https://pillow.readthedocs.io) — image OCR
+- [python-jose](https://github.com/mpdavis/python-jose) — JWT
+- [passlib](https://passlib.readthedocs.io) + [bcrypt](https://github.com/pyca/bcrypt) — password hashing
+
+**Frontend**
+- [React](https://react.dev) 18 — UI library
+- [Vite](https://vitejs.dev) 5 — build tool
+- [Tailwind CSS](https://tailwindcss.com) 3 — utility CSS
+- [React Router](https://reactrouter.com) 6 — client-side routing
+- [Axios](https://axios-http.com) — HTTP client with JWT interceptors
+- [Lucide React](https://lucide.dev) — icons
+- [Inter](https://rsms.me/inter/) + [JetBrains Mono](https://www.jetbrains.com/lp/mono/) — typography
+
+---
+
+## 📋 WCAG 2.1 AA Compliance
+
+- ✅ Skip navigation link
+- ✅ Landmark regions (`main`, `nav`, `footer`, `aside`, `section`)
+- ✅ All form inputs have associated `<label>` with `htmlFor`
+- ✅ Error messages via `role="alert"` + `aria-describedby`
+- ✅ Live regions (`aria-live="polite"`) on streaming status
+- ✅ Keyboard accessible drop zone (`role="button"` + `tabIndex`)
+- ✅ All icon-only buttons have `aria-label`
+- ✅ Visible focus ring (`:focus-visible` 2px indigo outline)
+- ✅ Contrast ratios ≥ 4.5:1 on all text (verified against dark backgrounds)
+- ✅ No information conveyed by colour alone (icon + text + colour triad)
+
+---
+
+## 📄 License
+
+MIT © 2025 DocuMind AI
+
+---
+
+<div align="center">
+Built with ❤️ using FastAPI, React, and OpenAI
+</div>
