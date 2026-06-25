@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#06040a" />
+    <title>SubscriptionGhost — Never Get Surprised by a Renewal Again</title>
+    <meta name="description" content="Track every subscription, get smart pre-alerts, and cut wasted spend with AI-powered insights." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👻</text></svg>" />
+    <style>
+      html,body{margin:0;padding:0;background:#06040a;color:#f0eeff;}
+      #root{min-height:100vh;}
+      #splash{
+        position:fixed;inset:0;background:#06040a;
+        display:flex;align-items:center;justify-content:center;
+        z-index:9999;transition:opacity .4s;
+      }
+      .splash-logo{
+        text-align:center;
+        animation:splashPop .6s cubic-bezier(.22,1,.36,1) both;
+      }
+      .splash-icon{
+        width:64px;height:64px;border-radius:16px;
+        background:linear-gradient(135deg,#7c3aed,#a855f7,#22d3ee);
+        display:flex;align-items:center;justify-content:center;
+        font-size:32px;margin:0 auto 14px;
+        box-shadow:0 0 40px rgba(168,85,247,.5);
+      }
+      .splash-name{
+        font-family:system-ui,sans-serif;font-size:20px;
+        font-weight:800;color:#f0eeff;letter-spacing:-.01em;
+      }
+      .splash-name span{color:#a855f7;}
+      .splash-dots{display:flex;gap:6px;justify-content:center;margin-top:16px;}
+      .splash-dots span{
+        width:6px;height:6px;border-radius:50%;
+        animation:dot 1.2s ease-in-out infinite;
+      }
+      .splash-dots span:nth-child(1){background:#a855f7;}
+      .splash-dots span:nth-child(2){background:#22d3ee;animation-delay:.18s;}
+      .splash-dots span:nth-child(3){background:#4ade80;animation-delay:.36s;}
+      @keyframes splashPop{
+        from{opacity:0;transform:scale(.9) translateY(12px);}
+        to{opacity:1;transform:scale(1) translateY(0);}
+      }
+      @keyframes dot{
+        0%,80%,100%{transform:scale(.6);opacity:.4;}
+        40%{transform:scale(1);opacity:1;}
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash">
+      <div class="splash-logo">
+        <div class="splash-icon">👻</div>
+        <div class="splash-name">Sub<span>Ghost</span></div>
+        <div class="splash-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
