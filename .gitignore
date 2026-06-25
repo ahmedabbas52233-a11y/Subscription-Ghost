@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ── Dependencies ─────────────────────────────────────────────────
 node_modules/
 .npm/
@@ -56,3 +57,58 @@ coverage/
 .parcel-cache/
 .turbo/
 .eslintcache
+=======
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env.bak
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+*.env.local
+.env.production
+
+# ── Node / Frontend ───────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# ── OS / Editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Uploads (local dev only) ──────────────────────────────────────────────────
+backend/uploads/
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.webp
+>>>>>>> 1ffa244ce9d959b0dbdc0e06d9b8fbe8ee15f699
