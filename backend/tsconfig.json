@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-<<<<<<< HEAD
     "target":                     "ES2020",
     "module":                     "commonjs",
     "lib":                        ["ES2020", "DOM"],
@@ -20,25 +19,4 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]
-=======
-    "target":                          "ES2020",
-    "module":                          "CommonJS",
-    "lib":                             ["ES2020"],
-    "outDir":                          "./dist",
-    "rootDir":                         "./src",
-    "strict":                          true,
-    "esModuleInterop":                  true,
-    "skipLibCheck":                    true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule":               true,
-    "declaration":                     true,
-    "sourceMap":                       true,
-    "removeComments":                  false,
-    "moduleResolution":                "node",
-    "experimentalDecorators":         true,
-    "emitDecoratorMetadata":           true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
->>>>>>> 1ffa244ce9d959b0dbdc0e06d9b8fbe8ee15f699
 }

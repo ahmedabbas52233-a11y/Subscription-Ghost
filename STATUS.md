@@ -47,6 +47,7 @@ These are fully designed, polished screens. Nothing on them persists.
 | Integrations (webhooks, Slack, API keys) | An `Integration` model per user, a webhook-dispatch step in the alert worker, and an API-key auth strategy alongside the existing JWT one for any public API usage. |
 | Email auto-scanner | This is a real OAuth + email-parsing integration (Gmail/Outlook API), not a small lift. Needs OAuth app registration, token storage, an email-parsing job, and a confidence-scoring heuristic or model. Largest item on this list. |
 | SMS alerts | Needs a Twilio (or similar) account, a `phoneNumber` + verification-code flow on the User model, and a new alert-delivery channel in the worker alongside the existing email one. |
+| Settings | Notification-channel toggles, alert-timing preferences, and the account email/phone fields are local component state, pre-filled with a hardcoded placeholder (`john@ghost.app`). "Save Changes" shows a confirmation but writes nothing anywhere. Needs preference fields added to the User model and a `PUT /api/users/me` endpoint. |
 
 ## Bugs fixed in this pass
 
@@ -150,7 +151,26 @@ the fix worked:
   acceptable given there's currently no UI path to set a subscription to
   anything other than active anyway.
 
-## Verified working, end of second pass
+## Bugs fixed in a third audit pass
+
+- **Duplicate Mongoose index on `User.email`**: the field already had
+  `unique: true` (which creates an index), plus a separate explicit
+  `UserSchema.index({ email: 1 })` — fully redundant. Mongoose printed a
+  "Duplicate schema index" warning on every server start. This is the kind
+  of thing that looks sloppy in a console log during a live demo even
+  though it's functionally harmless; removed.
+- **Second hardcoded avatar**: the Sidebar's profile avatar was correctly
+  wired to show the real logged-in user's initials in the previous pass —
+  but a *second*, separate avatar circle in the top header bar was missed
+  and still hardcoded the literal text `"JD"`. Found by grepping the
+  actual built `dist/` bundle for stray hardcoded strings rather than
+  re-reading source from memory; same fix applied.
+- **`SettingsPage` was never categorized anywhere in this document**
+  despite being entirely local mock state (hardcoded `john@ghost.app`,
+  a "Save Changes" button that shows a confirmation but persists nothing).
+  Added to the UI-only table above.
+
+## Verified working, end of third pass
 
 ```
 backend:  npx tsc --noEmit        → 0 errors

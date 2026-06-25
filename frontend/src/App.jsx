@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Bell, CreditCard, BarChart2, Settings, Plus, X, Home, Search, Zap,
@@ -239,48 +238,10 @@ function Tilt({ children, max = 14, className = "", style = {} }) {
         }} />
         {children}
       </div>
-=======
-import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { AnalysisProvider } from "./contexts/AnalysisContext";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import LandingPage from "./pages/LandingPage";
-import AuthPage from "./pages/AuthPage";
-import UploadPage from "./pages/UploadPage";
-import AnalysisPage from "./pages/AnalysisPage";
-import HistoryPage from "./pages/HistoryPage";
-
-function AppInner() {
-  const { checkAuth } = useAuth();
-
-  // Restore session from localStorage on first load
-  useEffect(() => {
-    checkAuth();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      {/* Each page component renders its own <main id="main-content"> */}
-      <div className="flex-1">
-        <Routes>
-          <Route path="/"         element={<LandingPage />} />
-          <Route path="/login"    element={<AuthPage />} />
-          <Route path="/register" element={<AuthPage />} />
-          <Route path="/upload"   element={<UploadPage />} />
-          <Route path="/analysis" element={<AnalysisPage />} />
-          <Route path="/history"  element={<HistoryPage />} />
-        </Routes>
-      </div>
-      <Footer />
->>>>>>> 1ffa244ce9d959b0dbdc0e06d9b8fbe8ee15f699
     </div>
   );
 }
 
-<<<<<<< HEAD
 /* ═══════════════════════════════════════════════════════════════
    3D PARTICLE CANVAS  (true z-depth projection)
 ═══════════════════════════════════════════════════════════════ */
@@ -1846,7 +1807,9 @@ function AppShell({ user, onLogout }) {
                 <div style={{ position:"absolute",inset:"-3px",borderRadius:"50%",border:"1.5px solid rgba(248,113,113,.5)",animation:"pulseRing 2s ease-out infinite" }}/>
               </div>
             </button>
-            <div style={{ width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#00ff87,#06b6d4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900,color:"#020510",cursor:"pointer",boxShadow:"0 0 14px rgba(0,255,135,.32)" }}>JD</div>
+            <div style={{ width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#00ff87,#06b6d4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900,color:"#020510",cursor:"pointer",boxShadow:"0 0 14px rgba(0,255,135,.32)" }}>
+              {(user?.name || user?.email || "?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase()}
+            </div>
           </div>
         </header>
         <main style={{ flex:1,overflowY:"auto",overflowX:"hidden" }}>{pages[page]||pages.dashboard}</main>
@@ -2675,14 +2638,5 @@ export default function App() {
       {screen==="auth"    && <AuthPage onAuth={handleAuth} />}
       {screen==="app"     && <AppShell user={authedUser} onLogout={handleLogout} />}
     </>
-=======
-export default function App() {
-  return (
-    <AuthProvider>
-      <AnalysisProvider>
-        <AppInner />
-      </AnalysisProvider>
-    </AuthProvider>
->>>>>>> 1ffa244ce9d959b0dbdc0e06d9b8fbe8ee15f699
   );
 }
